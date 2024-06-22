@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { Product } from '../models/product';
+import { ProductComponent } from "../product/product.component";
 
 @Component({
-  selector: 'app-eshop',
-  standalone: true,
-  imports: [],
-  templateUrl: './eshop.component.html',
-  styleUrl: './eshop.component.scss',
+    selector: 'app-eshop',
+    standalone: true,
+    templateUrl: './eshop.component.html',
+    styleUrl: './eshop.component.scss',
+    imports: [ProductComponent]
 })
 export class EshopComponent {
   title = "Barny's Eshop";

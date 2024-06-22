@@ -1,1 +1,8 @@
 <p>Welcome to {{ title }}</p>
+
+<div>
+    @for (item of items; track item.id) {
+
+    <app-product [product]="item" />
+    }
+  </div>

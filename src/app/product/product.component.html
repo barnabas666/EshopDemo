@@ -1,0 +1,15 @@
+<div>
+    <!-- Product Thumbnail -->
+    <!-- For img we provide string property so we must do it using variable [src]="product.image"
+         or we can use src="{{ product.image }}", w/o [] it would treat product.image as text  -->
+    <img [src]="product.image" alt="Product Thumbnail" />
+  
+    <!-- Product Name -->
+    <h2>{{ product.name  }}</h2>
+  
+    <!-- Product Price -->
+    <div>
+      <span>Price:</span>
+      <span>{{ product.price }}</span>
+    </div>
+  </div>
