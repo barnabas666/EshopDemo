@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Product } from '../models/product';
 
 @Component({
   selector: 'app-eshop',
@@ -10,7 +11,7 @@ import { Component } from '@angular/core';
 export class EshopComponent {
   title = "Barny's Eshop";
 
-  items = [
+  items: Product[] = [
     {
       id: 1,
       name: 'Black Hoodie',
