@@ -66,6 +66,10 @@ export class EshopComponent {
 
   constructor(private serverService: ServerService) {}
 
+  // we invoke get method and subscribe to Observable which we get from that method
+  // Observable is something like promise (or like in async - we just awaiting Task to be completed)
+  // result of this we call products which is type PaginatorProducts and we assign it to our  
+  // products property which we pass to ProductComponent as @Input property.
   ngOnInit() {
     this.serverService
       .get<PaginatorProducts>('http://localhost:3000/clothes', {
