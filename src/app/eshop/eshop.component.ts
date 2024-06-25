@@ -1,53 +1,82 @@
 import { Component } from '@angular/core';
-import { Product } from '../models/product';
-import { ProductComponent } from "../product/product.component";
+import { PaginatorProducts, Product } from '../models/models';
+import { ProductComponent } from '../product/product.component';
+import { ServerService } from '../services/server.service';
 
 @Component({
-    selector: 'app-eshop',
-    standalone: true,
-    templateUrl: './eshop.component.html',
-    styleUrl: './eshop.component.scss',
-    imports: [ProductComponent]
+  selector: 'app-eshop',
+  standalone: true,
+  templateUrl: './eshop.component.html',
+  styleUrl: './eshop.component.scss',
+  imports: [ProductComponent],
 })
 export class EshopComponent {
   title = "Barny's Eshop";
 
-  items: Product[] = [
-    {
-      id: 1,
-      name: 'Black Hoodie',
-      image: 'assets/images/products/image1.jpg',
-      price: '21',
-    },
-    {
-      id: 2,
-      name: 'Branded Shoes',
-      image: 'assets/images/products/image2.jpg',
-      price: '13.5',
-    },
-    {
-      id: 3,
-      name: 'White',
-      image: 'assets/images/products/image3.jpg',
-      price: '69.0',
-    },
-    {
-      id: 4,
-      name: 'Gray Dress 1',
-      image: 'assets/images/products/image4.jpg',
-      price: '315',
-    },
-    {
-      id: 5,
-      name: 'Black T-Shirt (Mens)',
-      image: 'assets/images/products/image5.jpg',
-      price: '55.0',
-    },
-    {
-      id: 6,
-      name: 'Jeans Jacket',
-      image: 'assets/images/products/image6.jpg',
-      price: '115.0',
-    },
-  ];
+  // array of Product which we get from ngOnInit() getProducts() method which returns PaginatorProducts
+  // which contains items property of type Product[]
+  // products: Product[] = [
+  //   {
+  //     "id": 1,
+  //     "image": "assets/images/products/image1.jpg",
+  //     "name": "Black Hoodie",
+  //     "price": "24",
+  //     "rating": 5
+  //   },
+  //   {
+  //     "id": 2,
+  //     "name": "Branded Shoes",
+  //     "image": "assets/images/products/image2.jpg",
+  //     "price": "13.5",
+  //     "rating": 4
+  //   },
+  //   {
+  //     "id": 3,
+  //     "image": "assets/images/products/image3.jpg",
+  //     "name": "White",
+  //     "price": "85.0",
+  //     "rating": 3
+  //   },
+  //   {
+  //     "id": 4,
+  //     "image": "assets/images/products/image4.jpg",
+  //     "name": "Gray Dress 1",
+  //     "price": "625",
+  //     "rating": 3
+  //   },
+  //   {
+  //     "id": 5,
+  //     "name": "Black T-Shirt (Mens)",
+  //     "image": "assets/images/products/image5.jpg",
+  //     "price": "55.0",
+  //     "rating": 5
+  //   },
+  //   {
+  //     "id": 6,
+  //     "name": "Jeans Jacket",
+  //     "image": "assets/images/products/image6.jpg",
+  //     "price": "115.0",
+  //     "rating": 4
+  //   },
+  // ];
+
+  products: Product[] = [];
+  page: number = 0;
+  perPage: number = 6;
+
+  constructor(private serverService: ServerService) {}
+
+  ngOnInit() {
+    this.serverService
+      .get<PaginatorProducts>('http://localhost:3000/clothes', {
+        params: {
+          page: this.page,
+          perPage: this.perPage,
+        },
+        responseType: 'json',
+      })
+      .subscribe(
+        (products: PaginatorProducts) => (this.products = products.items)
+      );
+  }
 }
