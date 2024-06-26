@@ -2,85 +2,53 @@ import { Component } from '@angular/core';
 import { PaginatorProducts, Product } from '../models/models';
 import { ProductComponent } from '../product/product.component';
 import { ServerService } from '../services/server.service';
+import { PaginatorModule } from 'primeng/paginator';
 
 @Component({
   selector: 'app-eshop',
   standalone: true,
   templateUrl: './eshop.component.html',
   styleUrl: './eshop.component.scss',
-  imports: [ProductComponent],
+  imports: [ProductComponent, PaginatorModule],
 })
 export class EshopComponent {
   title = "Barny's Eshop";
 
-  // array of Product which we get from ngOnInit() getProducts() method which returns PaginatorProducts
-  // which contains items property of type Product[]
-  // products: Product[] = [
-  //   {
-  //     "id": 1,
-  //     "image": "assets/images/products/image1.jpg",
-  //     "name": "Black Hoodie",
-  //     "price": "24",
-  //     "rating": 5
-  //   },
-  //   {
-  //     "id": 2,
-  //     "name": "Branded Shoes",
-  //     "image": "assets/images/products/image2.jpg",
-  //     "price": "13.5",
-  //     "rating": 4
-  //   },
-  //   {
-  //     "id": 3,
-  //     "image": "assets/images/products/image3.jpg",
-  //     "name": "White",
-  //     "price": "85.0",
-  //     "rating": 3
-  //   },
-  //   {
-  //     "id": 4,
-  //     "image": "assets/images/products/image4.jpg",
-  //     "name": "Gray Dress 1",
-  //     "price": "625",
-  //     "rating": 3
-  //   },
-  //   {
-  //     "id": 5,
-  //     "name": "Black T-Shirt (Mens)",
-  //     "image": "assets/images/products/image5.jpg",
-  //     "price": "55.0",
-  //     "rating": 5
-  //   },
-  //   {
-  //     "id": 6,
-  //     "name": "Jeans Jacket",
-  //     "image": "assets/images/products/image6.jpg",
-  //     "price": "115.0",
-  //     "rating": 4
-  //   },
-  // ];
-
   products: Product[] = [];
-  page: number = 0;
-  perPage: number = 6;
+
+  // every time we get Products from server we set number of all products
+  totalRecords: number = 0;
+  // number of Products per Page
+  perPage: number = 5;
 
   constructor(private serverService: ServerService) {}
 
+  // At start of app we ask for Products from our server
+  ngOnInit() {
+    this.getProducts(0, this.perPage);
+  }
+
+  /* callback function for event emitted every time we change page (using Paginator), we get again Products
+     from our server with diff page and number of rows per page which we get from event params */
+  onPageChange(event: any) {
+    this.getProducts(event.page, event.rows);
+  }
+
   // we invoke get method and subscribe to Observable which we get from that method
   // Observable is something like promise (or like in async - we just awaiting Task to be completed)
-  // result of this we call products which is type PaginatorProducts and we assign it to our  
-  // products property which we pass to ProductComponent as @Input property.
-  ngOnInit() {
+  // result of this we call products which is type PaginatorProducts and we assign it to our
+  // products property (which we later pass to ProductComponent as @Input property).
+  getProducts(page: number, perPage: number) {
     this.serverService
       .get<PaginatorProducts>('http://localhost:3000/clothes', {
         params: {
-          page: this.page,
-          perPage: this.perPage,
+          page,
+          perPage,
         },
         responseType: 'json',
       })
-      .subscribe(
-        (products: PaginatorProducts) => (this.products = products.items)
-      );
+      .subscribe((products: PaginatorProducts) => {
+        (this.products = products.items), (this.totalRecords = products.total);
+      });
   }
 }

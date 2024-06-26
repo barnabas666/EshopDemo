@@ -1,10 +1,27 @@
-<p>Welcome to {{ title }}</p>
+<div class="column gap-1">
+  <h1 class="title">Welcome to {{ title }}</h1>
 
-<div class="row wrap gap-2 space-between">
-  <!-- We use here for loop for all our products than we provide each item as @Input property
+  <!-- Products Section -->
+  <div class="row wrap gap-2 space-between">
+    <!-- We use here for loop for all our products than we provide each item as @Input property
       to our ProductComponent [product]. So we establish connection between "parent/smart"
       HomeComponent and "child/dumb" ProductComponent on [product] property (@Input type) from "child".-->
-  @for (item of products; track item.id) {
-  <app-product [product]="item" />
-  }
+    @for (item of products; track item.id) {
+    <app-product [product]="item" />
+    }
+  </div>
+
+  <!-- Paginator -->
+  <!-- We have several input properties which setup how our Page looks like, so  by default
+  [perPage] is number of Products per Page, 
+  [totalRecords] is number of all products
+  [rowsPerPageOptions] available options for number of Products per Page (dropdown) 
+  (onPageChange) is @Output property where we get from Paginator info how many Products and
+  Pages we have and we pass it to our getProducts() method. -->
+  <p-paginator
+    [rows]="perPage"
+    [totalRecords]="totalRecords"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    (onPageChange)="onPageChange($event)"    
+  ></p-paginator>
 </div>
