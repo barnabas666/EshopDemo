@@ -34,10 +34,12 @@ export class EshopComponent {
     this.getProducts(event.page, event.rows);
   }
 
-  // we invoke get method and subscribe to Observable which we get from that method
-  // Observable is something like promise (or like in async - we just awaiting Task to be completed)
-  // result of this we call products which is type PaginatorProducts and we assign it to our
-  // products property (which we later pass to ProductComponent as @Input property).
+  /* we invoke get method (page and perPage are paremeters which we get from onPageChange event) and subscribe
+     to Observable which we get from that method. Observable is something like promise (or like in async - we 
+     just awaiting Task to be completed), result of this we call data which is of type PaginatorProducts and 
+     we assign it to our this.products property and number of products to this.totalRecords property.
+     OK after some changes we split response into 2 functions like in methods below which handle successful and
+     error response, next and error are properties inside subscribe() method */
   getProducts(page: number, perPage: number) {
     this.serverService
       .get<PaginatorProducts>('http://localhost:3000/clothes', {
@@ -47,8 +49,72 @@ export class EshopComponent {
         },
         responseType: 'json',
       })
-      .subscribe((products: PaginatorProducts) => {
-        (this.products = products.items), (this.totalRecords = products.total);
+      .subscribe({
+        next: (data: PaginatorProducts) => {
+          this.products = data.items;
+          this.totalRecords = data.total;
+        },
+        error: (error) => {
+          console.log(error);
+        },
       });
   }
+
+  /* we invoke post method (product is parameter which we will get from onConfirmAdd event) 
+     and subscribe to Observable which we get from that method, here we split response into 2 functions, 
+     first handle successful request and second for errors. next and error are properties inside subscribe()
+     method, next will work with data we get and will call again fetchProducts() method with default parameters. */
+     addProduct(product: Product) {
+      this.serverService
+        .post(`http://localhost:3000/clothes`, product, {})
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            this.getProducts(0, this.perPage);            
+          },
+          error: (error) => {
+            console.log(error);
+          },
+        });
+    }
+
+  /* we invoke put method (product and id are parameters which we will get from onConfirmEdit event) 
+     and subscribe to Observable which we get from that method, here we split response into 2 functions, 
+     first handle successful request and second for errors. next and error are properties inside subscribe()
+     method, next will work with data we get and will call again getProducts() method with default parameters. */
+  editProduct(product: Product, id: number) {
+    this.serverService
+      .put<PaginatorProducts>(
+        `http://localhost:3000/clothes/${id}`,
+        product,
+        {}
+      )
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.getProducts(0, this.perPage);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+    /* we invoke delete method (id is paremeter which we will get from toggleDeletePopup event) 
+     and subscribe to Observable which we get from that method, here we split response into 2 functions, 
+     first handle successful request and second for errors. next and error are properties inside subscribe()
+     method, next will work with data we get and will call again getProducts() method with default parameters. */
+     deleteProduct(id: number) {
+      this.serverService
+        .delete(`http://localhost:3000/clothes/${id}`, {})
+        .subscribe({
+          next: (data) => {
+            console.log(data);
+            this.getProducts(0, this.perPage);            
+          },
+          error: (error) => {
+            console.log(error);
+          },
+        });
+    }
 }
