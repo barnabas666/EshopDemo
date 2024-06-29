@@ -1,6 +1,16 @@
 <div class="column gap-1">
   <h1 class="title">Welcome to {{ title }}</h1>
 
+  <!-- Add Product Button, PrimeNG button, (click) is click button event not @Output event -->
+  <button
+    type="button"
+    pButton
+    icon="pi pi-plus"
+    (click)="toggleAddPopup()"
+    label="Add Product"
+    class="add-product-btn"
+  ></button>
+
   <!-- Products Section -->
   <div class="row wrap gap-2 space-between">
     <!-- We use here for loop for all our products than we provide each item as @Input property
@@ -22,6 +32,17 @@
     [rows]="perPage"
     [totalRecords]="totalRecords"
     [rowsPerPageOptions]="[5, 10, 20]"
-    (onPageChange)="onPageChange($event)"    
+    (onPageChange)="onPageChange($event)"
   ></p-paginator>
 </div>
+
+<!-- Add Product Popup Comp = AddEditComponent (PrimeNG Comp) in Add version -->
+<!-- (confirm) @Output event from AddEditComponent - after click Confirm button we get here created Product, 
+  [(display)] 2-way binding (@Input/@Output) prop, as @Input it will pass true/false value to AddEditComponent(Add) 
+  [display] prop where it will set PrimeNG "Popup" Dialog visible prop to show this Popup or not, as @Output we need to
+  create in AddEditComponent @Output (displayChange) prop which will emit back value of [display] prop. -->
+<app-add-edit
+  [(display)]="displayAddPopup"
+  (confirm)="onConfirmAdd($event)"
+  header="Add Product"
+></app-add-edit>

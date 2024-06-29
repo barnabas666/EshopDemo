@@ -1,0 +1,51 @@
+<!-- PrimeNG "Popup" Dynamic Dialog, "header" is @Input property which we get from EshopComponent and we pass/assign
+    it to another @Input property inside PrimeNG Dialog Component. [(visible)] is 2-way binding to setup visibility
+    and we use for this @Input display property from EshopComponent, closable - not allowing user to close this Popup,
+    only in specific cases we allow (our 2 buttons - Confirm & Cancel). -->
+<p-dialog
+  [header]="header"
+  [(visible)]="display"
+  [modal]="true"
+  [closable]="false"
+>
+  <!-- Input Form with several input field for Add/Edit Product -->
+  <div class="column gap-1">
+    <!-- Name -->
+    <div class="row gap-05">
+      <span class="price-label">Name:</span>
+      <input type="text" [(ngModel)]="product.name" />
+    </div>
+
+    <!-- Price -->
+    <div class="row gap-05">
+      <span class="price-label">Price:</span>
+      <input type="text" [(ngModel)]="product.price" />
+    </div>
+
+    <!-- Image -->
+    <div class="row gap-05">
+      <span class="price-label">Image:</span>
+      <input type="text" [(ngModel)]="product.image" />
+    </div>
+  </div>
+
+  <!-- PrimeNG Footer with action buttons -->
+  <p-footer>
+    <!-- onConfirm() event, pButton means its PrimeNG button, icon is PrimeNG -->
+    <button
+      type="button"
+      pButton
+      icon="pi pi-check"
+      (click)="onConfirm()"
+      label="Confirm"
+    ></button>
+    <!-- onCancel() event, pButton means its PrimeNG button, icon is PrimeNG -->
+    <button
+      type="button"
+      pButton
+      icon="pi pi-times"
+      (click)="onCancel()"
+      label="Cancel"
+    ></button>
+  </p-footer>
+</p-dialog>

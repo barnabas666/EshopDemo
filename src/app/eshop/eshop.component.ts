@@ -3,13 +3,16 @@ import { PaginatorProducts, Product } from '../models/models';
 import { ProductComponent } from '../product/product.component';
 import { ServerService } from '../services/server.service';
 import { PaginatorModule } from 'primeng/paginator';
+import { AddEditComponent } from '../add-edit/add-edit.component';
+import { ButtonModule } from 'primeng/button';
+
 
 @Component({
   selector: 'app-eshop',
   standalone: true,
   templateUrl: './eshop.component.html',
   styleUrl: './eshop.component.scss',
-  imports: [ProductComponent, PaginatorModule],
+  imports: [ProductComponent, PaginatorModule, AddEditComponent, ButtonModule],
 })
 export class EshopComponent {
   title = "Barny's Eshop";
@@ -21,6 +24,9 @@ export class EshopComponent {
   // number of Products per Page
   perPage: number = 5;
 
+  // variable used to manage displaying Add Popup inside AddEditComponent (PrimeNG Popup visible prop)
+  displayAddPopup: boolean = false;
+
   constructor(private serverService: ServerService) {}
 
   // At start of app we ask for Products from our server
@@ -28,10 +34,22 @@ export class EshopComponent {
     this.getProducts(0, this.perPage);
   }
 
+  // Add button callback - display Add Product Popup Comp = AddEditComponent (PrimeNG Comp) in Add version
+  toggleAddPopup() {
+    this.displayAddPopup = true;
+  }
+
   /* callback function for event emitted every time we change page (using Paginator), we get again Products
      from our server with diff page and number of rows per page which we get from event params */
   onPageChange(event: any) {
     this.getProducts(event.page, event.rows);
+  }
+
+  /* callback function for event emitted every time we Confirm to Add new Product, we make POST request to server, 
+  after that we close corresponding Popup */
+  onConfirmAdd(product: Product) {
+    this.addProduct(product);
+    this.displayAddPopup = false;
   }
 
   /* we invoke get method (page and perPage are paremeters which we get from onPageChange event) and subscribe
@@ -64,19 +82,19 @@ export class EshopComponent {
      and subscribe to Observable which we get from that method, here we split response into 2 functions, 
      first handle successful request and second for errors. next and error are properties inside subscribe()
      method, next will work with data we get and will call again fetchProducts() method with default parameters. */
-     addProduct(product: Product) {
-      this.serverService
-        .post(`http://localhost:3000/clothes`, product, {})
-        .subscribe({
-          next: (data) => {
-            console.log(data);
-            this.getProducts(0, this.perPage);            
-          },
-          error: (error) => {
-            console.log(error);
-          },
-        });
-    }
+  addProduct(product: Product) {
+    this.serverService
+      .post(`http://localhost:3000/clothes`, product, {})
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.getProducts(0, this.perPage);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
 
   /* we invoke put method (product and id are parameters which we will get from onConfirmEdit event) 
      and subscribe to Observable which we get from that method, here we split response into 2 functions, 
@@ -100,21 +118,21 @@ export class EshopComponent {
       });
   }
 
-    /* we invoke delete method (id is paremeter which we will get from toggleDeletePopup event) 
+  /* we invoke delete method (id is paremeter which we will get from toggleDeletePopup event) 
      and subscribe to Observable which we get from that method, here we split response into 2 functions, 
      first handle successful request and second for errors. next and error are properties inside subscribe()
      method, next will work with data we get and will call again getProducts() method with default parameters. */
-     deleteProduct(id: number) {
-      this.serverService
-        .delete(`http://localhost:3000/clothes/${id}`, {})
-        .subscribe({
-          next: (data) => {
-            console.log(data);
-            this.getProducts(0, this.perPage);            
-          },
-          error: (error) => {
-            console.log(error);
-          },
-        });
-    }
+  deleteProduct(id: number) {
+    this.serverService
+      .delete(`http://localhost:3000/clothes/${id}`, {})
+      .subscribe({
+        next: (data) => {
+          console.log(data);
+          this.getProducts(0, this.perPage);
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
 }
