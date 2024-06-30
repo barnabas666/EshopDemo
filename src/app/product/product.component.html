@@ -13,4 +13,27 @@
     <span class="price">{{ product.price }}</span>
   </div>
 
+  <!-- Edit and Delete buttons, PrimeNG buttons, 
+      (click) is @Output event to pass selected Product back to our HomeComponent -->
+  <div class="row gap-05">
+    <button
+      type="button"
+      pButton
+      icon="pi pi-pencil"
+      (click)="editProduct()"
+      label="Edit"
+    ></button>
+    <button
+      type="button"
+      pButton
+      icon="pi pi-trash"
+      (click)="deleteProduct()"
+      label="Delete"
+      class="p-button-danger"
+      #deleteButton
+    ></button>
+  </div>
 </div>
+
+<!-- ConfirmationService Popup window, we use it for Confirm or Cancel of deleting Product. -->
+<p-confirmPopup></p-confirmPopup>

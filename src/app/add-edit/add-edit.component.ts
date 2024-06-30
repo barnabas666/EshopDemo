@@ -18,8 +18,8 @@ export class AddEditComponent {
   // @Input header, we will always provide value (Add/Edit) for it
   @Input() header!: string;
 
-  /* @Output to send back to EshopComponent change of @Input display property - changing there 
-   displayAddPopup prop */
+  /* @Output to send back to EshopComponent (changing @Input display property) - changing there 
+   displayAddComponent and displayEditComponent props */
   @Output() displayChange = new EventEmitter<boolean>();
   // @Output which will be called every time we want to confirm Add/Edit action and will
   // emit that Product back to EshopComponent
@@ -35,18 +35,21 @@ export class AddEditComponent {
     rating: 0,
   };
 
-  /* onConfirm callback which will through @Output (confirm) event emit Product back to HomeComponent. 
+  /* onConfirm callback which will through @Output (confirm) event emit Product back to EshopComponent. 
   Than we close this "Popup" Dialog and finally we emit @Output (displayChange) event, it will pass "false"
-  value back to HomeComponent like in onCancel callback. But here its little redundant to emit this (displaychange)
-  cause when we emit (confirm) event than in HomeComponent callback we manually set display prop to false (we dont have 
+  value back to EshopComponent like in onCancel callback. But here its little redundant to emit this (displaychange)
+  cause when we emit (confirm) event than in EshopComponent callback we manually set display prop to false (we dont have 
   (cancel) event inside onCancel callback so there we must do it). */
   onConfirm() {
     this.confirm.emit(this.product);
     this.display = false;
-    this.displayChange.emit(this.display); // emit value of display to HomeComponent
+    this.displayChange.emit(this.display); // emit value of display to EshopComponent
   }
 
-  // onCancel callback which will close this "Popup" Dialog
+  /* onCancel callback which will close this "Popup" Dialog, than we emit @Output (displayChange) event, 
+  it will pass "false" value back to EshopComponent. If we dont set displayAddComponent/displayEditComponent props
+  inside EshopComponent back to false than after we cancel Add/Edit Popup and try to click it again -
+  nothing happens. */
   onCancel() {
     this.display = false;
     this.displayChange.emit(this.display);
