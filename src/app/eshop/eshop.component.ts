@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { PaginatorProducts, Product } from '../models/models';
 import { ProductComponent } from '../product/product.component';
 import { ServerService } from '../services/server.service';
-import { PaginatorModule } from 'primeng/paginator';
+import { Paginator, PaginatorModule } from 'primeng/paginator';
 import { AddEditComponent } from '../add-edit/add-edit.component';
 import { ButtonModule } from 'primeng/button';
 
@@ -36,6 +36,9 @@ export class EshopComponent {
     price: '',
     rating: 0,
   };
+
+  // Accessing instance of Paginator Comp with use of hashtag #paginator
+  @ViewChild('paginator') paginator: Paginator | undefined;
 
   constructor(private serverService: ServerService) {}
 
@@ -90,6 +93,11 @@ export class EshopComponent {
     this.deleteProduct(product.id);
   }
 
+  // if paginator exists than change it to Page 0
+  resetPaginator() {
+    this.paginator?.changePage(0);
+  }
+
   /* we invoke get method (page and perPage are paremeters which we get from onPageChange event) and subscribe
      to Observable which we get from that method. Observable is something like promise (or like in async - we 
      just awaiting Task to be completed), result of this we call data which is of type PaginatorProducts and 
@@ -127,6 +135,7 @@ export class EshopComponent {
         next: (data) => {
           console.log(data);
           this.getProducts(0, this.perPage);
+          this.resetPaginator();
         },
         error: (error) => {
           console.log(error);
@@ -149,6 +158,7 @@ export class EshopComponent {
         next: (data) => {
           console.log(data);
           this.getProducts(0, this.perPage);
+          this.resetPaginator();
         },
         error: (error) => {
           console.log(error);
@@ -167,6 +177,7 @@ export class EshopComponent {
         next: (data) => {
           console.log(data);
           this.getProducts(0, this.perPage);
+          this.resetPaginator();
         },
         error: (error) => {
           console.log(error);
